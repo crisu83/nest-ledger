@@ -1,8 +1,8 @@
 import { Body, Controller, Get, Param, Post } from '@nestjs/common';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
-import { BalanceQuery } from './balance.query';
-import { DepositCommand } from './deposit.command';
-import { WithdrawCommand } from './withdraw.command';
+import { DepositCommand } from './commands/deposit.command';
+import { WithdrawCommand } from './commands/withdraw.command';
+import { BalanceQuery } from './queries/balance.query';
 
 @Controller('accounts')
 export class AccountsController {
