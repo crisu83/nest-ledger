@@ -1,5 +1,6 @@
 import { Body, Controller, Get, Param, Post } from '@nestjs/common';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
+import { CreateAccountCommand } from './commands/create-account.command';
 import { DepositCommand } from './commands/deposit.command';
 import { WithdrawCommand } from './commands/withdraw.command';
 import { BalanceQuery } from './queries/balance.query';
@@ -10,6 +11,11 @@ export class AccountsController {
     private readonly commandBus: CommandBus,
     private readonly queryBus: QueryBus,
   ) {}
+
+  @Post()
+  async createAccount() {
+    return this.commandBus.execute(new CreateAccountCommand());
+  }
 
   @Post(':id/deposit')
   async deposit(
