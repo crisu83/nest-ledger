@@ -1,12 +1,14 @@
-import { Body, Controller, Param, Post } from '@nestjs/common';
-import { CommandBus } from '@nestjs/cqrs';
+import { Body, Controller, Get, Param, Post } from '@nestjs/common';
+import { CommandBus, QueryBus } from '@nestjs/cqrs';
+import { BalanceQuery } from './balance.query';
 import { DepositCommand } from './deposit.command';
 import { WithdrawCommand } from './withdraw.command';
 
 @Controller('accounts')
 export class AccountsController {
   constructor(
-    private readonly commandBus: CommandBus, // private readonly queryBus: QueryBus,
+    private readonly commandBus: CommandBus,
+    private readonly queryBus: QueryBus,
   ) {}
 
   @Post(':id/deposit')
@@ -25,7 +27,8 @@ export class AccountsController {
     return this.commandBus.execute(new WithdrawCommand(accountId, amount));
   }
 
-  // async balance(accountId: string) {
-  //   return this.queryBus.execute(new BalanceQuery(accountId));
-  // }
+  @Get(':id/balance')
+  async balance(@Param('id') accountId: string) {
+    return this.queryBus.execute(new BalanceQuery(accountId));
+  }
 }

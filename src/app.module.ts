@@ -5,12 +5,14 @@ import { AppService } from './app.service';
 import { AccountsController } from './accounts/accounts.controller';
 import { DepositHandler } from './accounts/deposit.handler';
 import { WithdrawHandler } from './accounts/withdraw.handler';
+import { BalanceHandler } from './accounts/balance.handler';
 
-export const CommandHandlers = [DepositHandler, WithdrawHandler];
+const CommandHandlers = [DepositHandler, WithdrawHandler];
+const QueryHandlers = [BalanceHandler];
 
 @Module({
   imports: [CqrsModule],
   controllers: [AppController, AccountsController],
-  providers: [AppService, ...CommandHandlers],
+  providers: [AppService, ...CommandHandlers, ...QueryHandlers],
 })
 export class AppModule {}
