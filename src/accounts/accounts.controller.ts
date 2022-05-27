@@ -4,6 +4,7 @@ import { CreateAccountCommand } from './commands/create-account.command';
 import { DepositCommand } from './commands/deposit.command';
 import { WithdrawCommand } from './commands/withdraw.command';
 import { Account } from './models/account.model';
+import { FindAccountsQuery } from './queries/find-accounts.query';
 import { GetAccountQuery } from './queries/get-account.query';
 
 @Controller('accounts')
@@ -36,8 +37,13 @@ export class AccountsController {
     );
   }
 
+  @Get()
+  async findAccounts() {
+    return this.queryBus.execute(new FindAccountsQuery());
+  }
+
   @Get(':id')
-  async balance(@Param('id') accountId: string) {
+  async getAccount(@Param('id') accountId: string) {
     return this.queryBus.execute(new GetAccountQuery(accountId));
   }
 }

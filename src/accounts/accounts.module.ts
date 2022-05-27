@@ -6,10 +6,11 @@ import { AccountsController } from './accounts.controller';
 import { CreateAccountHandler } from './commands/create-account.handler';
 import { DepositHandler } from './commands/deposit.handler';
 import { WithdrawHandler } from './commands/withdraw.handler';
+import { FindAccountsHandler } from './queries/find-accounts.handler';
 import { GetAccountHandler } from './queries/get-account.handler';
 
 const CommandHandlers = [CreateAccountHandler, DepositHandler, WithdrawHandler];
-const QueryHandlers = [GetAccountHandler];
+const QueryHandlers = [FindAccountsHandler, GetAccountHandler];
 
 @Module({
   imports: [CqrsModule, EventsModule],
