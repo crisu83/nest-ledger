@@ -3,7 +3,8 @@ import { CommandBus, QueryBus } from '@nestjs/cqrs';
 import { CreateAccountCommand } from './commands/create-account.command';
 import { DepositCommand } from './commands/deposit.command';
 import { WithdrawCommand } from './commands/withdraw.command';
-import { BalanceQuery } from './queries/balance.query';
+import { Account } from './models/account.model';
+import { GetAccountQuery } from './queries/get-account.query';
 
 @Controller('accounts')
 export class AccountsController {
@@ -13,28 +14,30 @@ export class AccountsController {
   ) {}
 
   @Post()
-  async createAccount() {
-    return this.commandBus.execute(new CreateAccountCommand());
+  async createAccount(@Body() input: { currency: string }): Promise<Account> {
+    return this.commandBus.execute(new CreateAccountCommand(input.currency));
   }
 
   @Post(':id/deposit')
   async deposit(
     @Param('id') accountId: string,
-    @Body() { amount }: { amount: number },
+    @Body() input: { amount: number },
   ) {
-    return this.commandBus.execute(new DepositCommand(accountId, amount));
+    return this.commandBus.execute(new DepositCommand(accountId, input.amount));
   }
 
   @Post(':id/withdraw')
   async withdraw(
     @Param('id') accountId: string,
-    @Body() { amount }: { amount: number },
+    @Body() input: { amount: number },
   ) {
-    return this.commandBus.execute(new WithdrawCommand(accountId, amount));
+    return this.commandBus.execute(
+      new WithdrawCommand(accountId, input.amount),
+    );
   }
 
-  @Get(':id/balance')
+  @Get(':id')
   async balance(@Param('id') accountId: string) {
-    return this.queryBus.execute(new BalanceQuery(accountId));
+    return this.queryBus.execute(new GetAccountQuery(accountId));
   }
 }

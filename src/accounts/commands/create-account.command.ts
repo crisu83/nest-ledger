@@ -1,1 +1,3 @@
-export class CreateAccountCommand {}
+export class CreateAccountCommand {
+  constructor(public readonly currency: string) {}
+}
