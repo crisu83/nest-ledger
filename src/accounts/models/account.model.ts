@@ -14,26 +14,26 @@ export class Account extends AggregateRoot {
   }
 
   create(currency: string) {
-    this.apply(new AccountCreatedEvent(this.id, currency));
+    this.apply(new AccountCreatedEvent(this.id, { currency }));
   }
 
   deposit(amount: number) {
-    this.apply(new DepositEvent(this.id, amount));
+    this.apply(new DepositEvent(this.id, { amount }));
   }
 
   withdraw(amount: number) {
-    this.apply(new WithdrawEvent(this.id, amount));
+    this.apply(new WithdrawEvent(this.id, { amount }));
   }
 
   onAccountCreatedEvent(event: AccountCreatedEvent) {
-    this.currency = event.currency;
+    this.currency = event.payload.currency;
   }
 
   onDepositEvent(event: DepositEvent) {
-    this.balance += +event.amount;
+    this.balance += +event.payload.amount;
   }
 
   onWithdrawEvent(event: WithdrawEvent) {
-    this.balance -= +event.amount;
+    this.balance -= +event.payload.amount;
   }
 }

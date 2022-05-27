@@ -2,10 +2,10 @@ import { Injectable } from '@nestjs/common';
 import { Event } from './event.model';
 
 @Injectable()
-export class EventStore {
-  private readonly events: Event[] = [];
+export class EventStore<T extends Event = Event> {
+  private readonly events: T[] = [];
 
-  async save<T extends Event>(event: T): Promise<void> {
+  async save(event: T): Promise<void> {
     const prev = (
       await this.findAllForAggregate(event.aggregateName, event.aggregateId)
     ).slice(-1)[0];
@@ -20,7 +20,7 @@ export class EventStore {
   async findAllForAggregate(
     aggregateName: string,
     aggregateId: string,
-  ): Promise<Event[]> {
+  ): Promise<T[]> {
     return this.events
       .filter(
         (event) =>
