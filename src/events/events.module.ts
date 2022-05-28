@@ -1,12 +1,22 @@
-import { Module } from '@nestjs/common';
-import { CqrsModule } from '@nestjs/cqrs';
+import { Module, OnApplicationBootstrap } from '@nestjs/common';
+import { CqrsModule, EventBus } from '@nestjs/cqrs';
 import { EventPublisher } from './event-publisher';
 import { EventStore } from './event-store';
-import { EventsService } from './events.service';
 
 @Module({
   imports: [CqrsModule],
-  providers: [EventsService, EventPublisher, EventStore],
+  providers: [EventPublisher, EventStore],
   exports: [EventStore],
 })
-export class EventsModule {}
+export class EventsModule implements OnApplicationBootstrap {
+  constructor(
+    private eventBus: EventBus,
+    private eventPublisher: EventPublisher,
+  ) {}
+
+  onApplicationBootstrap() {
+    // Replace the default EventPublisher with our own
+    // which persists the events using the EventStore.
+    this.eventBus.publisher = this.eventPublisher;
+  }
+}
