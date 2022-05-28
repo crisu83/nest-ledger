@@ -1,5 +1,5 @@
 import { IQueryHandler, QueryHandler } from '@nestjs/cqrs';
-import { AccountsRepository } from '../accounts-repository';
+import { AccountsRepository } from '../accounts.repository';
 import { Account } from '../models/account.model';
 import { GetAccountQuery } from './get-account.query';
 

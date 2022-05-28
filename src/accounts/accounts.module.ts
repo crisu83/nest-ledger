@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { CqrsModule } from '@nestjs/cqrs';
 import { EventsModule } from '../events/events.module';
-import { AccountsRepository } from './accounts-repository';
+import { AccountsRepository } from './accounts.repository';
 import { AccountsController } from './accounts.controller';
 import { CreateAccountHandler } from './commands/create-account.handler';
 import { DepositHandler } from './commands/deposit.handler';

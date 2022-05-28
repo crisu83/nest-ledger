@@ -1,5 +1,5 @@
 import { CommandHandler, EventPublisher, ICommandHandler } from '@nestjs/cqrs';
-import { AccountsRepository } from '../accounts-repository';
+import { AccountsRepository } from '../accounts.repository';
 import { Account } from '../models/account.model';
 import { DepositCommand } from './deposit.command';
 
