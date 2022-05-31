@@ -4,28 +4,51 @@ import { DepositEvent } from '../events/deposit.event';
 import { WithdrawEvent } from '../events/withdraw.event';
 
 export class Account extends AggregateRoot {
-  static aggregateName = 'account';
+  static aggregatePrefix = 'account';
 
-  balance = 0;
+  balance?: number;
   currency?: string;
+
+  get aggregate(): string {
+    return Account.createAggregate(this.id);
+  }
 
   constructor(public readonly id: string) {
     super();
   }
 
   create(currency: string) {
-    this.apply(new AccountCreatedEvent(this.id, { currency }));
+    this.apply(
+      AccountCreatedEvent.create({
+        type: 'AccountCreatedEvent',
+        aggregate: this.aggregate,
+        payload: { currency },
+      }),
+    );
   }
 
   deposit(amount: number) {
-    this.apply(new DepositEvent(this.id, { amount }));
+    this.apply(
+      DepositEvent.create({
+        type: 'DepositEvent',
+        aggregate: this.aggregate,
+        payload: { amount },
+      }),
+    );
   }
 
   withdraw(amount: number) {
-    this.apply(new WithdrawEvent(this.id, { amount }));
+    this.apply(
+      WithdrawEvent.create({
+        type: 'WithdrawEvent',
+        aggregate: this.aggregate,
+        payload: { amount },
+      }),
+    );
   }
 
   onAccountCreatedEvent(event: AccountCreatedEvent) {
+    this.balance = 0;
     this.currency = event.payload.currency;
   }
 
@@ -35,5 +58,9 @@ export class Account extends AggregateRoot {
 
   onWithdrawEvent(event: WithdrawEvent) {
     this.balance -= +event.payload.amount;
+  }
+
+  static createAggregate(id: string) {
+    return `${Account.aggregatePrefix}:${id}`;
   }
 }

@@ -8,11 +8,10 @@ import {
   OnApplicationShutdown,
 } from '@nestjs/common';
 
-export const POSTGRES_OPTIONS = 'POSTGRES_OPTIONS';
-export const POSTGRES_CONNECTION = 'POSTGRES_CONNECTION';
+export const POSTGRES_OPTIONS = 'PosgresOptions';
+export const POSTGRES_CONNECTION = 'PostgresConnection';
 
 export type PostgresConnection = pgp.IDatabase<unknown>;
-
 export type PostgresModuleOptions = {
   connection: {
     host: string;
@@ -20,6 +19,13 @@ export type PostgresModuleOptions = {
     user: string;
     password: string;
   };
+};
+
+const connectionFactory = {
+  provide: POSTGRES_CONNECTION,
+  useFactory: (options: PostgresModuleOptions) =>
+    PostgresModule.createConnection(options),
+  inject: [POSTGRES_OPTIONS],
 };
 
 @Global()
@@ -41,13 +47,6 @@ export class PostgresModule
   }
 
   static forRoot(options: PostgresModuleOptions): DynamicModule {
-    const connectionProvider = {
-      provide: POSTGRES_CONNECTION,
-      useFactory: (options: PostgresModuleOptions) =>
-        PostgresModule.createConnection(options),
-      inject: [POSTGRES_OPTIONS],
-    };
-
     return {
       module: PostgresModule,
       providers: [
@@ -55,9 +54,9 @@ export class PostgresModule
           provide: POSTGRES_OPTIONS,
           useValue: options,
         },
-        connectionProvider,
+        connectionFactory,
       ],
-      exports: [connectionProvider],
+      exports: [connectionFactory],
     };
   }
 

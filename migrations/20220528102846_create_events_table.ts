@@ -10,7 +10,7 @@ export async function up(knex: Knex): Promise<void> {
       "aggregate" varchar NOT NULL,
       "version" bigint NOT NULL,
       "payload" jsonb NOT NULL,
-      "createdAt" timestamptz NOT NULL
+      "createdAt" timestamptz DEFAULT CURRENT_TIMESTAMP
     );
   `);
 }

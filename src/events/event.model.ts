@@ -1,13 +1,41 @@
 import { IEvent } from '@nestjs/cqrs';
-import { v4 as uuid } from 'uuid';
 
-export abstract class Event<T extends object = any> implements IEvent {
-  readonly id = uuid();
-  readonly type = this.constructor.name;
+type EventProps<T extends object> = {
+  id?: string;
+  type?: string;
+  aggregate: string;
+  version?: number;
+  payload?: T;
+};
 
-  abstract aggregateName: string;
-  abstract aggregateId: string;
+export class Event<T extends object = any> implements IEvent {
+  readonly id: string;
+  readonly type: string;
+  readonly aggregate: string;
+  readonly version?: number;
+  readonly payload?: T;
 
-  version: number;
-  payload: T;
+  protected constructor(
+    id: string,
+    type: string,
+    aggregate: string,
+    version?: number,
+    payload?: T,
+  ) {
+    this.id = id;
+    this.type = type;
+    this.aggregate = aggregate;
+    this.version = version;
+    this.payload = payload;
+  }
+
+  static create<T extends object = any>(props: EventProps<T>): Event {
+    return new this(
+      props.id,
+      props.type,
+      props.aggregate,
+      props.version,
+      props.payload,
+    );
+  }
 }

@@ -8,16 +8,14 @@ export class AccountsRepository {
   constructor(private readonly eventStore: EventStore) {}
 
   async findOneById(id: string): Promise<Account> {
-    const events = await this.eventStore.findAllByAggregateAndId(
-      Account.aggregateName,
-      id,
-    );
+    const aggregate = Account.createAggregate(id);
+    const events = await this.eventStore.findAllByAggregate(aggregate);
     return this.load(id, events);
   }
 
   async findAll(): Promise<Account[]> {
-    const eventsByAggregate = await this.eventStore.findAllByAggregate(
-      Account.aggregateName,
+    const eventsByAggregate = await this.eventStore.findAllByAggregatePrefix(
+      Account.aggregatePrefix,
     );
     return Array.from(Object.entries(eventsByAggregate), ([id, events]) =>
       this.load(id, events),
